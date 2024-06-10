@@ -5,14 +5,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default function ProductsList({ data, deleteItem, editItem }){
   return(
 <View style={styles.container}>
-    <Text style={styles.text}>Nome: {data.nome}</Text>
-    <Text style={styles.text}>Preço: {data.preco}</Text>
+    <View>
+      <Text style={styles.text}>Nome:</Text>
+      <Text style={styles.text}>  {data.nome}</Text>
+      <Text style={styles.text}>Preço:</Text>
+      <Text style={styles.text}>   {data.preco}</Text>
+    </View>
     <View style={styles.item}>
-        <TouchableOpacity onPress={()=> deleteItem(data.key)}>
-        <Icon name="trash" color="#A52A2A" size={20}>Excluir</Icon>
+        <TouchableOpacity style={{backgroundColor:"#e83b3b", borderRadius:10}} onPress={()=> deleteItem(data.key)}>
+        <Text style={styles.txtBtn}>Excluir</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => editItem(data)}>
-        <Icon name="create" color="blue" size={20}>Editar</Icon>
+        <TouchableOpacity style={{backgroundColor:"#058d20", borderRadius:10}} onPress={() => editItem(data)}>
+        <Text style={styles.txtBtn}>Editar</Text>
         </TouchableOpacity>
     </View>
     
@@ -24,11 +28,17 @@ export default function ProductsList({ data, deleteItem, editItem }){
 const styles = StyleSheet.create({
   container:{
     flex:1,
+    flexDirection:"row",
     marginTop: 1,
     marginBottom: 5,
-    width:"95vw",
+    width:380,
     padding: 10,
     backgroundColor: '#fff',
+    borderRadius:10,
+  },
+  card:{
+    width:"70%",
+    flex:1
   },
   text:{
     color:'black',
@@ -36,7 +46,15 @@ const styles = StyleSheet.create({
   },
   item: {
     flex:1,
-    flexDirection:'row',
-    justifyContent: 'space-around'
+    flexDirection:"column",
+    justifyContent: 'space-around',
+    alignItems:"flex-end",
+    marginRight:8,
+  },
+  txtBtn:{
+    color:"#fff",
+    paddingVertical:10,
+    width:90,
+    textAlign:"center"
   }
 });

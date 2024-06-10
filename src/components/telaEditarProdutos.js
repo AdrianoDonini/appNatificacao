@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs } from "firebase/firestore"; 
+import { setDoc } from "firebase/firestore"; 
 import db from "../services/firebase";
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard, FlatList, ActivityIndicator, Button, Pressable} from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
@@ -20,9 +20,10 @@ export default function TelaEditarProduto(){
     let [telaListar, setTelaListar] = useState(true);
     let [key, setKey] = useState('');
     let [toEdit, setToIdit] = useState(false);
-        async function Cadastrar(){
+        async function handleEdit(){
             try {
-                const docRef = await addDoc(collection(db, "products"), {
+                const docRef = doc(db, "Produtos", key);
+        await setDoc(docRef, {
                   nome: nome,
                   descricao: descricao,
                   marca: marca,
@@ -81,8 +82,8 @@ export default function TelaEditarProduto(){
                     value={preco}
                 />
                 <Separator />
-                <TouchableOpacity onPress={Cadastrar} style={styles.button} activeOpacity={0.5}>
-                        <Text style={styles.buttonTextStyle}>Cadastrar</Text>
+                <TouchableOpacity onPress={Editar} style={styles.button} activeOpacity={0.5}>
+                        <Text style={styles.buttonTextStyle}>Salvar</Text>
                 </TouchableOpacity>
                 </View>
         )

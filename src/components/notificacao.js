@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, View, StyleSheet, Text } from 'react-native';
+import { Button, View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 //import Products from './components/Products';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -42,41 +42,22 @@ Notifications.setNotificationHandler({
     };
   }, []);
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button
-        onPress={() => navigation.navigate('Produtos')}
-        title="Ver produtos"
-      />
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'space-around',
-        }}>
-        
-        <Button
-          title="Press to schedule a notification"
-          onPress={async () => {
-            await schedulePushNotification();
-          }}
-        />
-      </View>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={()=> schedulePushNotification()}><Text>notificação</Text></TouchableOpacity>
     </View>
   );
 }
 
 
-async function schedulePushNotification(nome, marca, preco) {
+async function schedulePushNotification() {
+  console.log("notificação chamada");
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Novo Produto!!!",
       body: 'Venha Conferir Nosso Novo Produto',
-      data: { nome: nome, test: { test1: marca, teste2:preco } },
+      data:{teste:"oi"}
     },
     trigger: { seconds: 2 },
-  });
-  responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    
   });
 }
 
