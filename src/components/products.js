@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, Text, StyleSheet, Pressable, FlatList, ActivityIndicator, Button, TouchableOpacity, TextInput } from 'react-native';
 import { addDoc, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore"; 
 import db from "../services/firebase";
 import ProductsList from "./productsList";
 import { Dialog } from 'react-native-simple-dialogs';
-import {schedulePushNotification} from "./notificacao"
+import { schedulePushNotification } from "./notificacao";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -21,43 +21,142 @@ export default function ProductManager() {
   const [toEdit, setToEdit] = useState(false);
   const [keytoDelet, setKeytoDelet] = useState('');
   const [showDialog, setShowDialog] = useState(false);
+  const [avisoNome, setAvisoNome] = useState(false);
+  const [avisoDescricao, setAvisoDescricao] = useState(false);
+  const [avisoMarca, setAvisoMarca] = useState(false);
+  const [avisoPreco, setAvisoPreco] = useState(false);
+  const [avisoTipoPreco, setAvisoTipoPreco] = useState(false);
 
-  async function Cadastrar() {
-    try {
-      const docRef = await addDoc(collection(db, "products"), {
-        nome: nome,
-        descricao: descricao,
-        marca: marca,
-        preco: preco
-      });
-      clearData();
-      setProducts(prevProducts => [{
-        key: docRef.id,
-        nome: nome,
-        descricao: descricao,
-        marca: marca,
-        preco: preco
-      }, ...prevProducts]);
-      await Listar();
-    } catch (e) {
-      console.error("Error adding document: ", e);
+  // Estado para gerenciar a cor da borda de cada input
+  const [borderColors, setBorderColors] = useState({
+    nome: '#000',
+    descricao: '#000',
+    marca: '#000',
+    preco: '#000',
+  });
+
+  const handleBlur = (field) => {
+    setBorderColors((prevColors) => ({
+      ...prevColors,
+      [field]: prevColors[field] === '#000' && !getInputValue(field) ? 'red' : '#000',
+    }));
+  };
+
+  const handleFocus = (field) => {
+    setBorderColors((prevColors) => ({
+      ...prevColors,
+      [field]: '#000',
+    }));
+  };
+
+  const getInputValue = (field) => {
+    switch (field) {
+      case 'nome':
+        return nome;
+      case 'descricao':
+        return descricao;
+      case 'marca':
+        return marca;
+      case 'preco':
+        return preco;
+      default:
+        return '';
     }
-    schedulePushNotification();
-    setTelaListar(true);
+  };
+function clearWarnings(){
+ setAvisoDescricao(false);
+ setAvisoMarca(false);
+ setAvisoNome(false);
+ setAvisoPreco(false);
+ setAvisoTipoPreco(false);
+}
+  async function Cadastrar() {
+    const valor = /^\d+,\d{2}$/;
+    if(nome=='') {
+      console.log(nome);
+      setAvisoNome(true);
+      return;
+    }
+    if(descricao=='') {
+      setAvisoDescricao(true);
+      return;
+    }
+    if(marca=='') {
+      setAvisoMarca(true);
+      return;
+    }
+    if(preco=='') {
+      setAvisoPreco(true);
+      return;
+    }
+    if(!(valor.test(preco))){
+      setAvisoTipoPreco(true);
+      return;
+    }
+
+    
+      try {
+        const docRef = await addDoc(collection(db, "products"), {
+          nome: nome,
+          descricao: descricao,
+          marca: marca,
+          preco: preco,
+        });
+        clearData();
+        setProducts((prevProducts) => [
+          {
+            key: docRef.id,
+            nome: nome,
+            descricao: descricao,
+            marca: marca,
+            preco: preco,
+          },
+          ...prevProducts,
+        ]);
+        await Listar();
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+      schedulePushNotification();
+      setTelaListar(true);
   }
 
   async function Editar() {
+    const valor = /^\d+,\d{2}$/;
+    if(nome=='') {
+      console.log(nome);
+      setAvisoNome(true);
+      return;
+    }
+    if(descricao=='') {
+      setAvisoDescricao(true);
+      return;
+    }
+    if(marca=='') {
+      setAvisoMarca(true);
+      return;
+    }
+    if(preco=='') {
+      setAvisoPreco(true);
+      return;
+    }
+    if(!(valor.test(preco))){
+      setAvisoTipoPreco(true);
+      return;
+    }
     try {
       const docRef = doc(db, "products", key);
       await setDoc(docRef, {
         nome: nome,
         descricao: descricao,
         marca: marca,
-        preco: preco
+        preco: preco,
       });
       clearData();
 
-      const updatedProducts = products.map(item => item.key === key ? { ...item, nome, descricao, marca, preco } : item);
+      const updatedProducts = products.map((item) =>
+        item.key === key ? { ...item, nome, descricao, marca, preco } : item
+      );
       setProducts(updatedProducts);
 
       await Listar();
@@ -94,7 +193,7 @@ export default function ProductManager() {
         nome: doc.data().nome,
         descricao: doc.data().descricao,
         marca: doc.data().marca,
-        preco: doc.data().preco
+        preco: doc.data().preco,
       });
     });
     setProducts(produtos.reverse());
@@ -121,18 +220,23 @@ export default function ProductManager() {
     await Listar();
   }
 
+  function Cancel(){
+    setTelaListar(true);
+    clearData();
+  }
+
   return (
     telaListar ? (
       <View style={styles.listar}>
-        <Pressable onPress={() => { setTelaListar(false); setToEdit(false); }}>
-          <Text>Novo Produto</Text>
+        <Pressable style={{backgroundColor:"#0078d4", paddingVertical:10, paddingHorizontal:14, marginVertical:10, borderRadius:10}} onPress={() => { setTelaListar(false); setToEdit(false); }}>
+          <Icon name="add-circle" color="#fff" size={20}>  Novo Produto</Icon>
         </Pressable>
         <View style={styles.flatList}>
           {loading ? (
             <ActivityIndicator color="#121212" size={45} />
           ) : (
             <FlatList
-              keyExtractor={item => item.key}
+              keyExtractor={(item) => item.key}
               data={products}
               renderItem={({ item }) => (
                 <ProductsList data={item} editItem={() => handleEdit(item)} deleteItem={() => handleDeleteItem(item.key)} />
@@ -158,47 +262,75 @@ export default function ProductManager() {
       </View>
     ) : (
       <View style={styles.container}>
+        <Text style={{fontWeight:600, fontSize:16,}}>Nome do Produto:</Text>
         <TextInput
-          placeholder="Nome do Produto"
+          placeholder='Digite ...'
           left={() => <TextInput.Icon icon="book-open" />}
           maxLength={40}
-          style={styles.input}
+          style={[styles.input, { borderColor: borderColors.nome }]}
           onChangeText={(texto) => setNome(texto)}
           value={nome}
+          onBlur={() => handleBlur('nome')}
+          onFocus={() => {handleFocus('nome'); clearWarnings()}}
         />
+        {avisoNome ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        <Text style={{fontWeight:600, fontSize:16,}}>Descrição do Produto:</Text>
         <TextInput
-          placeholder="Descrição do Produto"
+          placeholder='Digite ...'
           left={() => <TextInput.Icon icon="book-open" />}
           maxLength={100}
-          style={styles.input}
+          style={[styles.input, { borderColor: borderColors.descricao }]}
           onChangeText={(texto) => setDescricao(texto)}
           value={descricao}
+          onBlur={() => handleBlur('descricao')}
+          onFocus={() => {handleFocus('descricao'); clearWarnings()}}
         />
+        {avisoDescricao ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        <Text style={{fontWeight:600, fontSize:16,}}>Marca:</Text>
         <TextInput
-          placeholder="Marca"
+          placeholder='Digite ...'
           left={() => <TextInput.Icon icon="book-open" />}
           maxLength={40}
-          style={styles.input}
+          style={[styles.input, { borderColor: borderColors.marca }]}
           onChangeText={(texto) => setMarca(texto)}
           value={marca}
+          onBlur={() => handleBlur('marca')}
+          onFocus={() => {handleFocus('marca'); clearWarnings()}}
         />
+        {avisoMarca ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        <Text style={{fontWeight:600, fontSize:16,}}>Preço:</Text>
         <TextInput
-          placeholder="Preço"
+          placeholder='Digite ...'
           left={() => <TextInput.Icon icon="book-open" />}
           maxLength={40}
-          style={styles.input}
+          style={[styles.input, { borderColor: borderColors.preco }]}
           onChangeText={(texto) => setPreco(texto)}
           value={preco}
+          onBlur={() => handleBlur('preco')}
+          onFocus={() =>  {handleFocus('preco'); clearWarnings()}}
         />
+        {avisoPreco ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        {avisoTipoPreco ? (<Text>Digite apenas Valores em formato moeda!! Ex: 89,90</Text>):<Text></Text>}
         <Separator />
         {toEdit ? (
-          <TouchableOpacity onPress={Editar} style={styles.button} activeOpacity={0.5}>
-            <Text style={styles.buttonTextStyle}>Salvar</Text>
-          </TouchableOpacity>
+          <View style={styles.containerBtns}>
+            <TouchableOpacity onPress={Cancel} style={styles.bntCancel}>
+             <Icon name="close-circle" color="#000" size={20}>  Cancelar</Icon>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={Editar} style={styles.button} activeOpacity={0.5}>
+              <Icon name="create" color="#fff" size={20}>  Salvar</Icon>
+            </TouchableOpacity>
+          </View>
+
         ) : (
-          <TouchableOpacity onPress={Cadastrar} style={styles.button} activeOpacity={0.5}>
-            <Text style={styles.buttonTextStyle}>Cadastrar</Text>
-          </TouchableOpacity>
+          <View style={styles.containerBtns}>
+            <TouchableOpacity onPress={Cancel} style={styles.bntCancel}>
+             <Icon name="close-circle" color="#000" size={20}>  Cancelar</Icon>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={Cadastrar} style={styles.button} activeOpacity={0.5}>
+            <Icon name="add-circle" color="#fff" size={20}>  Cadastrar</Icon>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     )
@@ -206,6 +338,26 @@ export default function ProductManager() {
 }
 
 const styles = StyleSheet.create({
+  bntCancel:{
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    height: 40,
+    borderRadius: 5,
+    backgroundColor:"#fff",    
+    borderColor:"#fff",
+    marginHorizontal:8,
+  },
+  button: {
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor: '#3838ed',
+    height: 40,
+    borderRadius: 5,
+    borderColor:"#3838ed",
+    marginHorizontal:8,
+  },
   button1: {
     padding: 10,
     backgroundColor: '#2196F3',
@@ -217,29 +369,23 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: "#bbb",
   },
+  containerBtns:{
+    flex:1,
+    flexDirection:"row",
+  },
   input: {
-    borderWidth: 1,
-    height: 40,
-    fontSize: 13,
-    borderRadius: 12,
+    paddingHorizontal: 4,
+    borderRadius: 16,
+    height: 45,
+    fontSize: 16,
     margin: 5,
-    backgroundColor: "white",
-    border: "none",
+    backgroundColor: "#fff",
+    borderWidth: 1, // Definir a largura da borda
   },
   separator: {
     marginVertical: 5,
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#3838ed',
-    borderWidth: 0.5,
-    borderColor: '#fff',
-    height: 40,
-    borderRadius: 5,
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
+
   buttonImageIconStyle: {
     padding: 10,
     margin: 5,

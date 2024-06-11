@@ -1,9 +1,10 @@
-import * as React from 'react';
-import { Button, View,Text,StyleSheet, ImageBackground, ScrollView,SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Button, View,Text,StyleSheet, ImageBackground, ScrollView,SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator,} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import ProductManager from './products';
 import {NotificationScreem} from './notificacao';
+import HomeList from './homeList';
 
 function HomeScreen({ navigation }) {
   return (
@@ -20,6 +21,7 @@ function HomeScreen({ navigation }) {
       </ImageBackground>
       </SafeAreaView>
       <TouchableOpacity onPress={()=> navigation.navigate('Produtos')}><Text style={styles.button}>Mais Produtos</Text></TouchableOpacity>
+      
     </ScrollView>
   );
 }
