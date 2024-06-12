@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform, FlatList,ActivityIndicator } from 'react-native';
+import { useState, useEffect, useRef, useCallback  } from 'react';
+import { Text, View, Button, Platform, FlatList,ActivityIndicator,RefreshControl } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
@@ -27,6 +27,7 @@ export function NotificationScreem() {
   const [loading, setLoading] = useState<boolean>(true);
   interface elemento{
     key:string,
+    titulo:string,
     nome:string,
     marca:string,
     preco:string
@@ -44,7 +45,7 @@ export function NotificationScreem() {
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
       console.log(notification.request.content);
-      AddNotifications(notification.request.content.body, notification.request.content.data.marca,notification.request.content.data.preco);
+      AddNotifications(notification.request.content.title, notification.request.content.body, notification.request.content.data.marca, notification.request.content.data.preco);
       Listar();
     });
 
@@ -60,9 +61,10 @@ export function NotificationScreem() {
     };
   }, []);
 
-  async function AddNotifications(nome:string, marca:string, preco:string) {
+  async function AddNotifications(titulo:string,nome:string, marca:string, preco:string) {
     try {
-      await addDoc(collection(db, "notications"), {
+      await addDoc(collection(db, "notifications"), {
+        titulo:titulo,
         nome: nome,
         marca: marca,
         preco: preco,
@@ -76,11 +78,12 @@ export function NotificationScreem() {
   const Listar = async () => {
     setLoading(true);
     
-    const querySnapshot = await getDocs(collection(db, "notications"));
+    const querySnapshot = await getDocs(collection(db, "notifications"));
      let produtos:elemento[] = [];
     querySnapshot.forEach((doc) => {
       produtos.push({
         key:doc.id,
+        titulo: doc.data().titulo,
         nome: doc.data().nome,
         marca: doc.data().marca,
         preco: doc.data().preco,
@@ -92,6 +95,14 @@ export function NotificationScreem() {
 
   useEffect(() => {
     Listar();
+  }, []);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      Listar();
+      setRefreshing(false);
+    }, 2000);
   }, []);
 
   return (
@@ -106,6 +117,9 @@ export function NotificationScreem() {
               renderItem={({ item }) => (
                 <NotificationList data={item}  />
               )}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
             />
           )}
     </View>
@@ -117,7 +131,7 @@ async function chamarNotificacao(produto:string, marca:string, preco:string) {
     
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Confira nosso novo produto",
+        title: "Confira nosso novo produto!!!",
         body: produto,
         data: {marca, preco},
       },

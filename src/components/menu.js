@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View,Text,StyleSheet, ImageBackground, ScrollView,SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator,} from 'react-native';
+import { Button, View,Text,StyleSheet, ImageBackground, ScrollView,SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator,Image} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import ProductManager from './products';
@@ -21,7 +21,24 @@ function HomeScreen({ navigation }) {
       </ImageBackground>
       </SafeAreaView>
       <TouchableOpacity onPress={()=> navigation.navigate('Produtos')}><Text style={styles.button}>Mais Produtos</Text></TouchableOpacity>
-      
+      <View style={styles.publi}>
+        <View style={styles.card}>
+          <Text style={{fontWeight:600, fontSize:18, width:"100%", textAlign:"center"}}>Mouse RedDragon Cobra</Text>
+          <View style={styles.cardDescription}>
+            <Image
+            source={require('../../assets/loja-virtual.jpg')}
+            style={styles.image}
+                /> 
+            <Text>Muse Gamer RedDragon 10.000 DPI</Text> 
+            <Text>Preço:</Text>
+            <Text>R$ 210,50</Text>
+          </View>
+          <View style={styles.btns}>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#003b95", borderRadius:8, color:"#fff"}}>Ver Detalhes</Text></TouchableOpacity>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#ffe700", borderRadius:8,}}>Comprar</Text></TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -77,6 +94,37 @@ export default function MenuDrawer() {
   }
 
 const styles = StyleSheet.create({
+  publi:{
+    width:"100%",
+    height:"auto",
+  },
+  btns:{
+    flex:1,
+    flexDirection:"row",
+    justifyContent:'space-around',
+    width:"90%",
+    height:"auto",
+    marginHorizontal:"5%",
+    marginTop:15
+  },
+  cardDescription:{
+    width:"80%",
+    marginHorizontal:"10%",
+    height:"auto",
+  },
+  card:{
+    marginTop:15,
+    width:"90%",
+    marginHorizontal:"5%",
+    height:350,
+    backgroundColor:"#ddd",
+    borderRadius:10,
+    padding:10,
+  },
+  image:{
+    width:"100%",
+    height:200,
+  },
   contentMain:{
     width:"100%",
     height:500,
