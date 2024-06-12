@@ -4,7 +4,7 @@ import { addDoc, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/fi
 import db from "../services/firebase";
 import ProductsList from "./productsList";
 import { Dialog } from 'react-native-simple-dialogs';
-import { schedulePushNotification } from "./notificacao";
+import { chamarNotificacao } from "./notificacao";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Separator = () => <View style={styles.separator} />;
@@ -117,8 +117,10 @@ function clearWarnings(){
       } catch (e) {
         console.error("Error adding document: ", e);
       }
-      schedulePushNotification();
       setTelaListar(true);
+      clearWarnings();
+      await chamarNotificacao(nome, marca, preco)
+      
   }
 
   async function Editar() {
@@ -164,6 +166,7 @@ function clearWarnings(){
       console.error("Error adding document: ", e);
     }
     setTelaListar(true);
+    clearWarnings();
   }
 
   function clearData() {
@@ -223,6 +226,7 @@ function clearWarnings(){
   function Cancel(){
     setTelaListar(true);
     clearData();
+    clearWarnings();
   }
 
   return (

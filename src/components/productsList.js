@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
  
 export default function ProductsList({ data, deleteItem, editItem }){
+  console.log(data);
   return(
 <View style={styles.container}>
     <View>
