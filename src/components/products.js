@@ -277,7 +277,7 @@ function clearWarnings(){
           onBlur={() => handleBlur('nome')}
           onFocus={() => {handleFocus('nome'); clearWarnings()}}
         />
-        {avisoNome ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        {avisoNome ? (<Text style={{color:"red"}}>Preencha Este campo!!</Text>):<Text></Text>}
         <Text style={{fontWeight:600, fontSize:16,}}>Descrição do Produto:</Text>
         <TextInput
           placeholder='Digite ...'
@@ -289,7 +289,7 @@ function clearWarnings(){
           onBlur={() => handleBlur('descricao')}
           onFocus={() => {handleFocus('descricao'); clearWarnings()}}
         />
-        {avisoDescricao ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        {avisoDescricao ? (<Text style={{color:"red"}}>Preencha Este campo!!</Text>):<Text></Text>}
         <Text style={{fontWeight:600, fontSize:16,}}>Marca:</Text>
         <TextInput
           placeholder='Digite ...'
@@ -301,7 +301,7 @@ function clearWarnings(){
           onBlur={() => handleBlur('marca')}
           onFocus={() => {handleFocus('marca'); clearWarnings()}}
         />
-        {avisoMarca ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
+        {avisoMarca ? (<Text style={{color:"red"}}>Preencha Este campo!!</Text>):<Text></Text>}
         <Text style={{fontWeight:600, fontSize:16,}}>Preço:</Text>
         <TextInput
           placeholder='Digite ...'
@@ -313,8 +313,8 @@ function clearWarnings(){
           onBlur={() => handleBlur('preco')}
           onFocus={() =>  {handleFocus('preco'); clearWarnings()}}
         />
-        {avisoPreco ? (<Text>Preencha Este campo!!</Text>):<Text></Text>}
-        {avisoTipoPreco ? (<Text>Digite apenas Valores em formato moeda!! Ex: 89,90</Text>):<Text></Text>}
+        {avisoPreco ? (<Text style={{color:"red"}}>Preencha Este campo!!</Text>):<Text></Text>}
+        {avisoTipoPreco ? (<Text style={{color:"red"}}>Digite apenas Valores em formato moeda!! Ex: 89,90</Text>):<Text></Text>}
         <Separator />
         {toEdit ? (
           <View style={styles.containerBtns}>
@@ -371,7 +371,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 0,
-    backgroundColor: "#bbb",
+    backgroundColor: "#ddd",
+
   },
   containerBtns:{
     flex:1,

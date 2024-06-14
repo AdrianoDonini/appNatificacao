@@ -38,6 +38,40 @@ function HomeScreen({ navigation }) {
           <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#ffe700", borderRadius:8,}}>Comprar</Text></TouchableOpacity>
           </View>
         </View>
+        <View style={styles.card}>
+          <Text style={{fontWeight:600, fontSize:18, width:"100%", textAlign:"center"}}>Mouse RedDragon Cobra</Text>
+          <View style={styles.cardDescription}>
+            <Image
+            source={require('../../assets/loja-virtual.jpg')}
+            style={styles.image}
+                /> 
+            <Text>Muse Gamer RedDragon 10.000 DPI</Text> 
+            <Text>Preço:</Text>
+            <Text>R$ 210,50</Text>
+          </View>
+          
+          <View style={styles.btns}>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#003b95", borderRadius:8, color:"#fff"}}>Ver Detalhes</Text></TouchableOpacity>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#ffe700", borderRadius:8,}}>Comprar</Text></TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.card}>
+          <Text style={{fontWeight:600, fontSize:18, width:"100%", textAlign:"center"}}>Mouse RedDragon Cobra</Text>
+          <View style={styles.cardDescription}>
+            <Image
+            source={require('../../assets/loja-virtual.jpg')}
+            style={styles.image}
+                /> 
+            <Text>Muse Gamer RedDragon 10.000 DPI</Text> 
+            <Text>Preço:</Text>
+            <Text>R$ 210,50</Text>
+          </View>
+          
+          <View style={styles.btns}>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#003b95", borderRadius:8, color:"#fff"}}>Ver Detalhes</Text></TouchableOpacity>
+          <TouchableOpacity><Text style={{width:100, textAlign:"center", paddingVertical:8, backgroundColor:"#ffe700", borderRadius:8,}}>Comprar</Text></TouchableOpacity>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
